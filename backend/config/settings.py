@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'drf_spectacular',
+    'django_filters',
     # Local apps
     'medicaments',
     'ventes',

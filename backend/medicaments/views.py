@@ -13,6 +13,8 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from .models import Medicament
 from .serializers import MedicamentSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 @extend_schema(tags=["Médicaments"])
@@ -35,6 +37,9 @@ class MedicamentViewSet(viewsets.ModelViewSet):
     queryset = Medicament.objects.filter(est_actif=True).select_related("categorie")
     serializer_class = MedicamentSerializer
     permission_classes = []
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ["categorie"]
+    search_fields = ["nom"]
 
     @extend_schema(
         summary="Lister les médicaments",

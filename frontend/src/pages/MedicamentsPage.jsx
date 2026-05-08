@@ -17,17 +17,26 @@ export const MedicamentsPage = () => {
   const [editing, setEditing] = useState(null);
   
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [page, setPage] = useState(1);
   const [confirmDelete, setConfirmDelete] = useState({ open: false, medicament: null });
 
+  // Debounce the search input
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [search]);
+
   // Re-fetch automatically from API backend with valid query params
   useEffect(() => {
     const params = { page };
-    if (search) params.search = search;
+    if (debouncedSearch) params.search = debouncedSearch;
     if (selectedCategory) params.categorie = selectedCategory;
     reload(params);
-  }, [page, search, selectedCategory, reload]);
+  }, [page, debouncedSearch, selectedCategory, reload]);
 
   const onSubmit = async (data) => {
     if (editing) await edit(editing.id, data);
@@ -106,7 +115,7 @@ export const MedicamentsPage = () => {
               
               <div className="flex items-center justify-between border-t border-slate-200 dark:border-gray-700 px-4 py-3 text-sm text-slate-600 dark:text-gray-300">
                 <div>
-                  {pagination?.count || medicaments.length} médicament{(pagination?.count || medicaments.length) > 1 ? "s" : ""} au total
+                  {pagination?.count || medicaments.length} médicament{(pagination?.count || medicaments.length) > 1 ? "s" : ""} actif{(pagination?.count || medicaments.length) > 1 ? "s" : ""}
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
