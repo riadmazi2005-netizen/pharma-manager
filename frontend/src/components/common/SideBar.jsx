@@ -11,9 +11,7 @@ export const Sidebar = () => {
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col bg-[#1e3a5f] text-white">
       <div className="flex items-center gap-2 border-b border-white/10 px-6 py-5">
-        <div className="grid h-9 w-9 place-items-center rounded-md bg-teal-500 text-lg font-bold">
-          ＋
-        </div>
+        <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain drop-shadow-md" />
         <span className="text-lg font-semibold tracking-tight">Projet Pharma</span>
       </div>
       <nav className="flex flex-1 flex-col gap-1 px-3 py-4">

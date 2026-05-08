@@ -31,7 +31,9 @@ export const MedicamentSearch = ({ medicaments, onAdd }) => {
               <div className="flex items-center gap-2 font-medium text-slate-800 dark:text-gray-100">
                 {m.nom}
                 {m.est_en_alerte && Number(m.stock_actuel) > 0 && (
-                  <Badge tone="yellow">Stock faible</Badge>
+                  <span className="text-xs font-semibold text-orange-600 bg-orange-100 dark:bg-orange-900/50 dark:text-orange-400 px-2 py-0.5 rounded-full">
+                    STOCK FAIBLE
+                  </span>
                 )}
                 {Number(m.stock_actuel) <= 0 && (
                   <Badge tone="red">Rupture</Badge>
