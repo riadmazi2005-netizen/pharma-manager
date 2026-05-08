@@ -5,7 +5,7 @@ Expose un ViewSet CRUD complet pour le modèle Medicament,
 ainsi qu'une action personnalisée pour récupérer les médicaments en alerte stock.
 """
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -77,12 +77,15 @@ class MedicamentViewSet(viewsets.ModelViewSet):
         return super().partial_update(request, *args, **kwargs)
 
     @extend_schema(
-        summary="Supprimer un médicament",
-        description="Supprime définitivement un médicament du système.",
+        summary="Supprimer un médicament (Soft Delete)",
+        description="Marque le médicament comme inactif au lieu de le supprimer définitivement.",
         responses={204: OpenApiResponse(description="Suppression réussie"), 404: OpenApiResponse(description="Médicament introuvable")},
     )
     def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)
+        medicament = self.get_object()
+        medicament.est_actif = False
+        medicament.save(update_fields=["est_actif"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(
         summary="Médicaments en alerte de stock",

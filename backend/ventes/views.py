@@ -106,5 +106,10 @@ class VenteViewSet(
         vente.statut = Vente.Statut.ANNULEE
         vente.save(update_fields=["statut"])
 
+        # Réintégrer le stock
+        for ligne in vente.lignes.all():
+            ligne.medicament.stock_actuel += ligne.quantite
+            ligne.medicament.save(update_fields=["stock_actuel"])
+
         serializer = self.get_serializer(vente)
         return Response(serializer.data, status=status.HTTP_200_OK)

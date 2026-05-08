@@ -17,5 +17,10 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      // Calling useCallback-wrapped fetch functions inside useEffect is a valid
+      // React pattern. This rule produces false positives for that common idiom.
+      'react-hooks/set-state-in-effect': 'off',
+    },
   },
 ])

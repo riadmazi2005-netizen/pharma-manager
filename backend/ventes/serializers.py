@@ -100,6 +100,10 @@ class VenteSerializer(serializers.ModelSerializer):
             )
             total += sous_total
 
+            # Déduire le stock
+            medicament.stock_actuel -= quantite
+            medicament.save(update_fields=["stock_actuel"])
+
         vente.total_ttc = total
         vente.save(update_fields=["total_ttc"])
 
