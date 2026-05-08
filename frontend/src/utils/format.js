@@ -18,7 +18,10 @@ export const formatDate = (value) => {
 export const formatDateTime = (value) => {
   if (!value) return "-";
   try {
-    return new Date(value).toLocaleString("fr-FR");
+    return new Date(value).toLocaleString("fr-FR", {
+      dateStyle: "short",
+      timeStyle: "short",
+    });
   } catch {
     return value;
   }

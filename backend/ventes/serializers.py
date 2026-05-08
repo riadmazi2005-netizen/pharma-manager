@@ -32,10 +32,11 @@ class LigneVenteSerializer(serializers.ModelSerializer):
     sous_total = serializers.DecimalField(
         max_digits=12, decimal_places=2, read_only=True
     )
+    medicament_nom = serializers.CharField(source="medicament.nom", read_only=True)
 
     class Meta:
         model = LigneVente
-        fields = ["id", "medicament", "quantite", "prix_unitaire", "sous_total"]
+        fields = ["id", "medicament", "medicament_nom", "quantite", "prix_unitaire", "sous_total"]
 
 
 class VenteSerializer(serializers.ModelSerializer):

@@ -6,7 +6,7 @@ import { Modal } from "../components/common/Modal";
 import { LoadingState, ErrorState } from "../components/common/StateViews";
 import { fetchVente } from "../api/ventesApi";
 import { useVentes } from "../hooks/useVentes";
-import { formatCurrency, formatDate } from "../utils/format";
+import { formatCurrency, formatDateTime } from "../utils/format";
 import { ConfirmModal } from "../components/common/ConfirmModal";
 
 const PAGE_SIZE = 7;
@@ -152,7 +152,7 @@ export const HistoriqueVentesPage = () => {
                       </button>
                     </td>
                     <td className="px-4 py-3 text-slate-700 dark:text-gray-200">
-                      {formatDate(v.date_vente || v.date)}
+                      {formatDateTime(v.date_vente || v.date)}
                     </td>
                     <td className="px-4 py-3 font-semibold text-slate-800 dark:text-gray-100">
                       {formatCurrency(v.total_ttc)}
@@ -226,7 +226,7 @@ export const HistoriqueVentesPage = () => {
                   <div>
                     <span className="block text-slate-500 dark:text-gray-400">Date</span>
                     <span className="font-medium text-slate-800 dark:text-gray-200">
-                      {formatDate(selectedVente.date_vente || selectedVente.date)}
+                      {formatDateTime(selectedVente.date_vente || selectedVente.date)}
                     </span>
                   </div>
                   <div>
