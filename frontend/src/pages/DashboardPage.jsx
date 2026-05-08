@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Header } from "../components/common/Header";
 import { Badge } from "../components/common/Badge";
 import { LoadingState, ErrorState } from "../components/common/StateViews";
@@ -33,6 +34,29 @@ export const DashboardPage = () => {
   );
   const ca = ventesDuJour.reduce((a, v) => a + Number(v.total_ttc || 0), 0);
 
+  const chartData = useMemo(() => {
+    const data = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().slice(0, 10);
+      data.push({ date: dateStr, total: 0 });
+    }
+    
+    ventes.forEach((v) => {
+      const vDate = (v.date_vente || v.date || "").slice(0, 10);
+      const day = data.find((d) => d.date === vDate);
+      if (day) {
+        day.total += Number(v.total_ttc || 0);
+      }
+    });
+
+    return data.map((d) => ({
+      name: new Date(d.date).toLocaleDateString("fr-FR", { weekday: 'short', day: 'numeric', month: 'short' }),
+      total: d.total
+    }));
+  }, [ventes]);
+
   const formatStatut = (s) => {
     switch (s) {
       case "EN_COURS": return "En cours";
@@ -53,6 +77,42 @@ export const DashboardPage = () => {
           <Card label="Chiffre d'affaires" value={formatCurrency(ca)} tone="teal" />
           <Card label="Alertes stock" value={alertes.length} tone="red" />
         </div>
+
+        <section className="rounded-lg bg-white dark:bg-gray-800 dark:text-white p-5 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-slate-800 dark:text-gray-100">
+            Évolution des ventes — 7 derniers jours
+          </h2>
+          {lv ? (
+            <LoadingState />
+          ) : (
+            <div className="w-full">
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={chartData} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
+                  <XAxis 
+                    dataKey="name" 
+                    stroke="#888888" 
+                    fontSize={12} 
+                    tickLine={false} 
+                    axisLine={false} 
+                  />
+                  <YAxis 
+                    stroke="#888888" 
+                    fontSize={12} 
+                    tickLine={false} 
+                    axisLine={false} 
+                    tickFormatter={(value) => `${value} MAD`} 
+                  />
+                  <Tooltip 
+                    cursor={{fill: 'transparent'}}
+                    contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
+                    formatter={(value) => [`${value} MAD`, "Ventes"]}
+                  />
+                  <Bar dataKey="total" fill="#1e3a5f" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </section>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <section className="rounded-lg bg-white dark:bg-gray-800 dark:text-white p-5 shadow-sm">

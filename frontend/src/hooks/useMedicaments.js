@@ -12,13 +12,17 @@ export const useMedicaments = (autoLoad = true) => {
   const [alertes, setAlertes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({ count: 0, next: null, previous: null });
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (params = {}) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchMedicaments();
+      const data = await fetchMedicaments(params);
       setMedicaments(Array.isArray(data) ? data : data?.results ?? []);
+      if (data && data.count !== undefined) {
+        setPagination({ count: data.count, next: data.next, previous: data.previous });
+      }
     } catch (e) {
       setError(e.message);
     } finally {
@@ -64,6 +68,7 @@ export const useMedicaments = (autoLoad = true) => {
     alertes,
     loading,
     error,
+    pagination,
     reload: load,
     reloadAlertes: loadAlertes,
     add,

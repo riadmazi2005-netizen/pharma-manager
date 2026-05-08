@@ -4,6 +4,7 @@ export const Sidebar = () => {
   const items = [
     { href: "/", label: "Tableau de bord", icon: "🏠" },
     { href: "/medicaments", label: "Médicaments", icon: "💊" },
+    { href: "/categories", label: "Catégories", icon: "📁" },
     { href: "/ventes", label: "Ventes", icon: "🛒" },
     { href: "/historique", label: "Historique des ventes", icon: "📋" },
   ];
