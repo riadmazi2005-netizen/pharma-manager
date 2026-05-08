@@ -9,11 +9,13 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from .models import Vente
 from .serializers import VenteSerializer
 
 
+@extend_schema(tags=["Ventes"])
 class VenteViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -39,6 +41,47 @@ class VenteViewSet(
     serializer_class = VenteSerializer
     permission_classes = []
 
+    @extend_schema(
+        summary="Lister les ventes",
+        description="Retourne l'historique complet de toutes les ventes avec leurs lignes.",
+        responses={200: VenteSerializer(many=True)},
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Créer une vente",
+        description=(
+            "Crée une nouvelle vente avec ses lignes imbriquées. "
+            "Le `prix_unitaire` et le `sous_total` de chaque ligne sont calculés automatiquement. "
+            "La `reference` et le `total_ttc` sont également générés automatiquement."
+        ),
+        responses={201: VenteSerializer},
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Détail d'une vente",
+        description="Retourne le détail complet d'une vente identifiée par son `id`, avec toutes ses lignes.",
+        responses={200: VenteSerializer, 404: OpenApiResponse(description="Vente introuvable")},
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Annuler une vente",
+        description=(
+            "Change le statut de la vente à `ANNULEE`. "
+            "Retourne une erreur 400 si la vente est déjà annulée."
+        ),
+        request=None,
+        responses={
+            200: VenteSerializer,
+            400: OpenApiResponse(description="La vente est déjà annulée"),
+            404: OpenApiResponse(description="Vente introuvable"),
+        },
+    )
     @action(detail=True, methods=["post"], url_path="annuler")
     def annuler(self, request: Request, pk: int = None) -> Response:
         """
