@@ -40,9 +40,19 @@ export const HistoriqueVentesPage = () => {
   const filtered = useMemo(() => {
     return ventes.filter((v) => {
       if (statut !== "ALL" && v.statut !== statut) return false;
-      const d = (v.date_vente || v.date || "").slice(0, 10);
-      if (from && d < from) return false;
-      if (to && d > to) return false;
+      
+      const dateStr = v.date_vente || v.date || "";
+      if (!dateStr) return true;
+      
+      const dValue = new Date(dateStr).getTime();
+      
+      if (from) {
+        if (dValue < new Date(from).getTime()) return false;
+      }
+      if (to) {
+        if (dValue > new Date(to).getTime()) return false;
+      }
+      
       return true;
     });
   }, [ventes, statut, from, to]);
@@ -97,7 +107,7 @@ export const HistoriqueVentesPage = () => {
           <label className="flex flex-col gap-1 text-sm">
             <span className="font-medium text-slate-700 dark:text-gray-200">Du</span>
             <input
-              type="date"
+              type="datetime-local"
               className="rounded-md border border-slate-300 dark:border-gray-600 px-3 py-2 text-sm"
               value={from}
               onChange={(e) => setFrom(e.target.value)}
@@ -106,7 +116,7 @@ export const HistoriqueVentesPage = () => {
           <label className="flex flex-col gap-1 text-sm">
             <span className="font-medium text-slate-700 dark:text-gray-200">Au</span>
             <input
-              type="date"
+              type="datetime-local"
               className="rounded-md border border-slate-300 dark:border-gray-600 px-3 py-2 text-sm"
               value={to}
               onChange={(e) => setTo(e.target.value)}

@@ -16,6 +16,7 @@ export const CategoriesPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState({ open: false, cat: null });
+  const [alertError, setAlertError] = useState({ open: false, message: "" });
 
   const openAdd = () => {
     setEditingCat(null);
@@ -41,7 +42,14 @@ export const CategoriesPage = () => {
     try {
       await remove(cat.id);
     } catch (err) {
-      setSubmitError("Erreur lors de la suppression : " + err.message);
+      if (err.message && err.message.includes("500")) {
+        setAlertError({
+          open: true,
+          message: "Impossible de supprimer cette catégorie car elle contient des médicaments. Supprimez d'abord les médicaments associés."
+        });
+      } else {
+        setAlertError({ open: true, message: "Erreur lors de la suppression : " + err.message });
+      }
     }
   };
 
@@ -117,7 +125,7 @@ export const CategoriesPage = () => {
       </div>
 
       <Modal
-        isOpen={isModalOpen}
+        open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={editingCat ? "Modifier la catégorie" : "Ajouter une catégorie"}
       >
@@ -166,6 +174,16 @@ export const CategoriesPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirmer la suppression"
         message={confirmDelete.cat ? `Voulez-vous vraiment supprimer la catégorie "${confirmDelete.cat.nom}" ? Cette action risque de poser problème si des médicaments y sont liés.` : ""}
+      />
+
+      <ConfirmModal
+        open={alertError.open}
+        onClose={() => setAlertError({ open: false, message: "" })}
+        onConfirm={() => setAlertError({ open: false, message: "" })}
+        title="Erreur"
+        message={alertError.message}
+        confirmText="OK"
+        cancelText="Fermer"
       />
     </div>
   );

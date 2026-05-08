@@ -5,7 +5,7 @@ import { Badge } from "../components/common/Badge";
 import { LoadingState, ErrorState } from "../components/common/StateViews";
 import { useMedicaments } from "../hooks/useMedicaments";
 import { useVentes } from "../hooks/useVentes";
-import { formatCurrency, formatDate } from "../utils/format";
+import { formatCurrency, formatDate, formatDateTime } from "../utils/format";
 
 const Card = ({ label, value, tone = "blue" }) => {
   const tones = {
@@ -27,7 +27,14 @@ export const DashboardPage = () => {
   const { alertes, loading: lm, error: em } = useMedicaments();
   const { ventes, loading: lv, error: ev } = useVentes();
 
-  const today = new Date().toISOString().slice(0, 10);
+  const getLocalDateString = (d) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const today = getLocalDateString(new Date());
   const ventesDuJour = useMemo(
     () => ventes.filter((v) => (v.date_vente || v.date || "").startsWith(today)),
     [ventes, today]
@@ -39,7 +46,7 @@ export const DashboardPage = () => {
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().slice(0, 10);
+      const dateStr = getLocalDateString(d);
       data.push({ date: dateStr, total: 0 });
     }
     
@@ -162,7 +169,7 @@ export const DashboardPage = () => {
                   {ventes.slice(0, 6).map((v) => (
                     <tr key={v.id} className="border-b border-slate-100 dark:border-gray-700">
                       <td className="py-2 text-slate-600 dark:text-gray-300">
-                        {formatDate(v.date_vente || v.date)}
+                        {formatDateTime(v.date_vente || v.date)}
                       </td>
                       <td className="py-2 font-medium text-teal-600">
                         {v.reference || `INV-${v.id}`}

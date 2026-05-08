@@ -13,7 +13,7 @@ export const Sidebar = () => {
     <aside className="flex h-screen w-64 shrink-0 flex-col bg-[#1e3a5f] text-white">
       <div className="flex items-center gap-2 border-b border-white/10 px-6 py-5">
         <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain drop-shadow-md" />
-        <span className="text-lg font-semibold tracking-tight">Projet Pharma</span>
+        <span className="text-lg font-semibold tracking-tight">Pharmacie</span>
       </div>
       <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
         {items.map((it) => (
@@ -35,7 +35,7 @@ export const Sidebar = () => {
         ))}
       </nav>
       <div className="mt-auto border-t border-white/10 px-6 py-4 text-xs text-white/60">
-        © Projet Pharma
+        © Pharmacie
       </div>
     </aside>
   );

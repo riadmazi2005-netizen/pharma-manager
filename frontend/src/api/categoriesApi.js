@@ -11,7 +11,7 @@ export const createCategory = async (payload) => {
 };
 
 export const updateCategory = async (id, payload) => {
-  const { data } = await api.patch(`/categories/${id}/`, payload);
+  const { data } = await api.put(`/categories/${id}/`, payload);
   return data;
 };
 
