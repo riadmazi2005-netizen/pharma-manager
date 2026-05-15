@@ -117,3 +117,6 @@ cd frontend
 # Lancer l'interface
 npm run dev
 ```
+pour acceder au base de donnes
+dans backend tapes python manage.py createsuperuser
+cree un compte puis tu peux acceder a la base de donnes par :http://localhost:8000/admin/
